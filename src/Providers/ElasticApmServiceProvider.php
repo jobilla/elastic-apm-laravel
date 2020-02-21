@@ -80,6 +80,7 @@ class ElasticApmServiceProvider extends ServiceProvider
         $this->app->instance(Timer::class, $timer);
 
         $this->app->alias(Agent::class, 'elastic-apm');
+        $this->app->instance(SpanCollection::class, $collection);
         $this->app->instance('query-log', $collection);
 
     }
