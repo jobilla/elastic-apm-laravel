@@ -39,7 +39,7 @@ class RecordTransaction
         $transaction = $this->agent->startTransaction(
             $this->getTransactionName($request)
             [],
-            $this->app['request']->server('REQUEST_TIME_FLOAT') ?? null
+            $request->server('REQUEST_TIME_FLOAT') ?? null
         );
 
         // await the outcome
