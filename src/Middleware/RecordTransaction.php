@@ -37,7 +37,7 @@ class RecordTransaction
     public function handle($request, Closure $next)
     {
         $transaction = $this->agent->startTransaction(
-            $this->getTransactionName($request)
+            $this->getTransactionName($request),
             [],
             $request->server('REQUEST_TIME_FLOAT') ?? null
         );
