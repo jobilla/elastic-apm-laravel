@@ -21,19 +21,4 @@ class Transaction
         $this->collection = $collection;
         $this->timer = $timer;
     }
-
-    public function startNewSpan(string $name = null, string $type = null): Span
-    {
-        $span = new Span($this->timer, $this->collection);
-
-        if (null !== $name) {
-            $span->setName($name);
-        }
-
-        if (null !== $type) {
-            $span->setType($type);
-        }
-
-        return $span;
-    }
 }

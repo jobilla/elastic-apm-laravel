@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use PhilKra\Agent;
+use PhilKra\ElasticApmLaravel\Apm\CompletedSpan;
 use PhilKra\ElasticApmLaravel\Apm\SpanCollection;
 use PhilKra\ElasticApmLaravel\Apm\Transaction;
 use PhilKra\ElasticApmLaravel\Contracts\VersionResolver;
@@ -183,13 +184,9 @@ class ElasticApmServiceProvider extends ServiceProvider
                 ];
             })->values();
 
-            /** @var Agent $agent */
-            $agent = $this->app->make('elastic-apm');
             $tempParent = new EventBean([]);
             $tempParent->setTraceId('123');
-            $span = $agent->factory()->newSpan('Eloquent Query', $tempParent);
-            $span->start();
-            $span->stop(round($query->time, 3));
+            $span = new CompletedSpan('Eloquent Query', $tempParent);
             $span->setType('db.mysql.query');
             $span->setStacktrace($stackTrace->toArray());
             $span->setContext([
