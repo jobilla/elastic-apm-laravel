@@ -83,7 +83,7 @@ class CompletedSpan extends TraceableEvent implements \JsonSerializable
         }
 
         if ($start === null) {
-            $start = microtime(true) - $duration;
+            $start = microtime(true) - $duration / 1000;
         }
 
         $this->timer = new Timer($start);
