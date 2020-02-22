@@ -186,7 +186,7 @@ class ElasticApmServiceProvider extends ServiceProvider
 
             $tempParent = new EventBean([]);
             $tempParent->setTraceId('123');
-            $span = new CompletedSpan('Eloquent Query', $tempParent, $query->time);
+            $span = new CompletedSpan('Eloquent Query', $tempParent, null, $query->time);
             $span->setType('db.mysql.query');
             $span->setStacktrace($stackTrace->toArray());
             $span->setContext([
