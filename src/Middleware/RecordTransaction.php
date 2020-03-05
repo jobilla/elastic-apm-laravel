@@ -5,6 +5,7 @@ namespace PhilKra\ElasticApmLaravel\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Log;
 use PhilKra\Agent;
+use PhilKra\ElasticApmLaravel\Apm\Transaction;
 use PhilKra\Events\Span;
 use PhilKra\Helper\Timer;
 
@@ -36,11 +37,15 @@ class RecordTransaction
      */
     public function handle($request, Closure $next)
     {
-        $transaction = $this->agent->startTransaction(
+        $transaction = new Transaction(
             $this->getTransactionName($request),
             [],
             defined('LARAVEL_START') ? LARAVEL_START : $request->server('REQUEST_TIME_FLOAT')
         );
+//        $transaction = $this->agent->startTransaction(
+//            $this->getTransactionName($request),
+//            [],
+//        );
 
         // await the outcome
         $response = $next($request);
@@ -65,6 +70,8 @@ class RecordTransaction
             'result' => $response->getStatusCode(),
             'type' => 'HTTP'
         ]);
+
+        $this->agent->putEvent($transaction);
 
         /** @var Span $query */
         foreach (app('query-log') as $query) {

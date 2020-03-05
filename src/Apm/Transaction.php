@@ -2,23 +2,31 @@
 
 namespace PhilKra\ElasticApmLaravel\Apm;
 
-
 use PhilKra\Helper\Timer;
+use PhilKra\Events\Transaction as BaseTransaction;
 
 /*
  * Eventually this class could be a proxy for a Transaction provided by the
  * Elastic APM package.
  */
-class Transaction
+class Transaction extends BaseTransaction
 {
-    /** @var SpanCollection  */
-    private $collection;
-    /** @var Timer  */
-    private $timer;
+    protected $timestamp = null;
 
-    public function __construct(SpanCollection $collection, Timer $timer)
+    public function __construct(string $name, array $contexts, $start = null)
     {
-        $this->collection = $collection;
-        $this->timer = $timer;
+        parent::__construct($name, $contexts, $start);
+
+        if ($start) {
+            $this->timestamp = round($start * 1000000);
+        }
+    }
+
+    public function jsonSerialize(): array
+    {
+        $transaction = parent::jsonSerialize()['transaction'];
+        $transaction['timestamp'] = $this->timestamp;
+
+        return ['transaction' => $transaction];
     }
 }

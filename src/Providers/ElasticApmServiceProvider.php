@@ -76,8 +76,6 @@ class ElasticApmServiceProvider extends ServiceProvider
 
         $collection = new SpanCollection();
 
-        $this->app->instance(Transaction::class, new Transaction($collection, $timer));
-
         $this->app->instance(Timer::class, $timer);
 
         $this->app->alias(Agent::class, 'elastic-apm');
