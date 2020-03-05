@@ -67,7 +67,6 @@ class RecordTransaction
             'type' => 'HTTP'
         ]);
 
-        $this->agent->putEvent($transaction);
 
         /** @var Span $query */
         foreach (app('query-log') as $query) {
@@ -80,6 +79,7 @@ class RecordTransaction
         }
 
         $transaction->stop();
+        $this->agent->putEvent($transaction);
 
         return $response;
     }

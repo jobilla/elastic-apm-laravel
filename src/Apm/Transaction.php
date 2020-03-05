@@ -25,7 +25,7 @@ class Transaction extends BaseTransaction
     public function jsonSerialize(): array
     {
         $transaction = parent::jsonSerialize()['transaction'];
-        $transaction['timestamp'] = $this->timestamp;
+        $transaction['timestamp'] = $this->timestamp ?? $this->getTimestamp();
 
         return ['transaction' => $transaction];
     }
