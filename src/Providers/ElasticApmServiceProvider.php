@@ -10,7 +10,6 @@ use Illuminate\Support\Arr;
 use PhilKra\Agent;
 use PhilKra\ElasticApmLaravel\Apm\CompletedSpan;
 use PhilKra\ElasticApmLaravel\Apm\SpanCollection;
-use PhilKra\ElasticApmLaravel\Apm\Transaction;
 use PhilKra\ElasticApmLaravel\Contracts\VersionResolver;
 use PhilKra\Events\EventBean;
 use PhilKra\Helper\Timer;

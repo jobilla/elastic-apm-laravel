@@ -40,7 +40,7 @@ class RecordTransaction
         $transaction = new Transaction(
             $this->getTransactionName($request),
             [],
-            defined('LARAVEL_START') ? LARAVEL_START : $request->server('REQUEST_TIME_FLOAT')
+            $request->server('REQUEST_TIME_FLOAT') ?? (defined('LARAVEL_START') ? LARAVEL_START : microtime(true))
         );
 
         // await the outcome
