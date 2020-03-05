@@ -42,10 +42,6 @@ class RecordTransaction
             [],
             defined('LARAVEL_START') ? LARAVEL_START : $request->server('REQUEST_TIME_FLOAT')
         );
-//        $transaction = $this->agent->startTransaction(
-//            $this->getTransactionName($request),
-//            [],
-//        );
 
         // await the outcome
         $response = $next($request);
