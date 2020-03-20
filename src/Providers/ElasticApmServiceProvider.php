@@ -65,17 +65,6 @@ class ElasticApmServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->booted(function ($app) {
-            $this->bootedAt = microtime(true);
-            /** @var SpanCollection $collection */
-            $collection = $app->make('query-log');
-            $tmpParent  = new EventBean([]);
-            $tmpParent->setTraceId('123');
-            $span = new CompletedSpan('Framework booting', $tmpParent, LARAVEL_START);
-            $span->setType('framework.booting');
-            $collection->push($span);
-        });
-
         $this->mergeConfigFrom(
             realpath($this->sourceConfigPath),
             'elastic-apm'
@@ -109,6 +98,17 @@ class ElasticApmServiceProvider extends ServiceProvider
         $this->app->alias(Agent::class, 'elastic-apm');
         $this->app->instance(SpanCollection::class, $collection);
         $this->app->instance('query-log', $collection);
+
+        $this->app->booted(function ($app) {
+            $this->bootedAt = microtime(true);
+            /** @var SpanCollection $collection */
+            $collection = $app->make('query-log');
+            $tmpParent  = new EventBean([]);
+            $tmpParent->setTraceId('123');
+            $span = new CompletedSpan('Framework booting', $tmpParent, LARAVEL_START);
+            $span->setType('framework.booting');
+            $collection->push($span);
+        });
     }
 
     /**
