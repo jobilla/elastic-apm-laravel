@@ -112,6 +112,8 @@ class RecordTransaction
             $request->route() ? $request->route()->uri() : $request->path()
         );
 
+        $path = ltrim(trim(config('elastic-apm.path_prefix', ''), '/')."/$path", '/');
+
         return sprintf(
             "%s /%s",
             $request->server->get('REQUEST_METHOD'),

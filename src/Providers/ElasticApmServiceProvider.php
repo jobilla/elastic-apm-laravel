@@ -3,7 +3,9 @@
 namespace PhilKra\ElasticApmLaravel\Providers;
 
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Routing\Events\RouteMatched;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
@@ -21,6 +23,8 @@ class ElasticApmServiceProvider extends ServiceProvider
     /** @var string  */
     private $sourceConfigPath = __DIR__ . '/../../config/elastic-apm.php';
 
+    protected $bootedAt = null;
+
     /**
      * Bootstrap the application services.
      *
@@ -37,6 +41,21 @@ class ElasticApmServiceProvider extends ServiceProvider
         if (config('elastic-apm.active') === true && config('elastic-apm.spans.querylog.enabled') !== false) {
             $this->listenForQueries();
         }
+
+        $this->app['events']->listen(RouteMatched::class, function ($event) {
+            if (!$this->bootedAt) {
+                Log::warning('matched route without a recorded boot time');
+                return;
+            }
+
+            /** @var SpanCollection $collection */
+            $collection = $this->app[SpanCollection::class];
+            $tmpParent  = new EventBean([]);
+            $tmpParent->setTraceId('123');
+            $span = new CompletedSpan('Middleware execution and route matching', $tmpParent, $this->bootedAt);
+            $span->setType('httpkernel.route.match');
+            $collection->push($span);
+        });
     }
 
     /**
@@ -46,6 +65,16 @@ class ElasticApmServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->booted(function ($app) {
+            $this->bootedAt = microtime(true);
+            /** @var SpanCollection $collection */
+            $collection = $app->make('query-log');
+            $tmpParent  = new EventBean([]);
+            $tmpParent->setTraceId('123');
+            $span = new CompletedSpan('Framework booting', $tmpParent, LARAVEL_START);
+            $span->setType('framework.booting');
+            $collection->push($span);
+        });
 
         $this->mergeConfigFrom(
             realpath($this->sourceConfigPath),

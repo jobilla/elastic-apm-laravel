@@ -2,7 +2,12 @@
 
 return [
     // Sets whether the apm reporting should be active or not
-    'active'        => env('APM_ACTIVE', true),
+    'active' => env('APM_ACTIVE', true),
+
+    // The path_prefix option will be used to prepend a hard-coded
+    // string to the URL path for all transactions. This can be
+    // useful if you are rewriting a path in a load balancer.
+    'path_prefix' => '',
 
     'app' => [
         // The app name that will identify your app in Kibana / Elastic APM
