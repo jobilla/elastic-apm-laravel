@@ -41,7 +41,7 @@ class Span
 
     public function end()
     {
-        $duration = round($this->timer->getElapsedInMilliseconds() - $this->start, 3);
+        $duration = floor($this->timer->getElapsedInMilliseconds() - $this->start);
         $this->collection->push([
             'name' => $this->name,
             'type' => $this->type,

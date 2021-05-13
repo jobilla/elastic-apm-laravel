@@ -184,7 +184,7 @@ class CompletedSpan extends TraceableEvent implements \JsonSerializable
                 'name'           => Encoding::keywordField($this->getName()),
                 'stacktrace'     => $this->stacktrace,
                 'sync'           => false,
-                'timestamp'      => $this->startTime * 1000000,
+                'timestamp'      => floor($this->startTime * 1000000),
             ]
         ];
     }

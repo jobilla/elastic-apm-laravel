@@ -18,7 +18,7 @@ class Transaction extends BaseTransaction
         parent::__construct($name, $contexts, $start);
 
         if ($start) {
-            $this->timestamp = round($start * 1000000);
+            $this->timestamp = floor($start * 1000000);
         }
     }
 
